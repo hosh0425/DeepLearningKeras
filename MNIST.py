@@ -3,24 +3,40 @@
 Created on Tue Mar 12 05:32:26 2019
 
 @author: Hossein
+
+
+DropOut: Simply put, dropout refers to ignoring units (i.e. neurons) during the training phase of certain set of neurons which is chosen at random.
+         By “ignoring”, I mean these units are not considered during a particular forward or backward pass
+         More technically, At each training stage, individual nodes are either dropped out of the net with probability 1-p or kept with probability p,
+         so that a reduced network is left; incoming and outgoing edges to a dropped-out node are also removed.
+
+         we use it to prevent over-fitting
+         
+         1- Dropout forces a neural network to learn more robust features
+            that are useful in conjunction with many different random subsets of the other neurons.
+        2- Dropout roughly doubles the number of iterations required to converge.
+           However, training time for each epoch is less.
+           
 """
 
 from keras.datasets import mnist
 from keras.models import Sequential
-from keras.layers import Dense , Activation
+from keras.layers import Dense , Dropout
 from keras.optimizers import SGD
 from keras.losses import categorical_crossentropy
 from keras.utils import np_utils
+import matplotlib.pyplot as plt
 import numpy as np
 
 np.random.seed(1671)
 
-NB_EPOCH = 200
+NB_EPOCH = 100
 BATCH_SIZE = 128 
 VERBOSE = 1
 NB_OUTPUT = 10
 OPTIMIZER = SGD()
 NB_HIDDEN = 128
+DROPOUT=0.3
 VALIDATION_SPLIT = 0.2
 
 """
@@ -49,8 +65,11 @@ creating model & compile it
 """
 
 model = Sequential()
-model.add(Dense(NB_OUTPUT , input_shape=(X_train.shape[1],)))
-model.add(Activation('softmax'))
+model.add(Dense(NB_HIDDEN , input_shape=(X_train.shape[1],) , activation = 'relu'))
+model.add(Dropout(DROPOUT))
+model.add(Dense(NB_HIDDEN , activation='relu'))
+model.add(Dropout(DROPOUT))
+model.add(Dense(NB_OUTPUT , activation='softmax') )
 model.summary()
 
 """
@@ -84,7 +103,7 @@ We reserved part of the training set for validation. The key idea is that we res
     training. This is a good practice to follow for any machine learning task, which we
     will adopt in all our examples.
 """
-    history = model.fit(X_train , Y_train,
+history = model.fit(X_train , Y_train,
                         batch_size = BATCH_SIZE , epochs= NB_EPOCH,
                         verbose = VERBOSE , validation_split=VALIDATION_SPLIT)
     
@@ -101,6 +120,16 @@ print("Test score: " , score[0])
 print("Test accuracy: " , score[1])
 
 
+"""
+We have to add number of epochs till train accuracy intersect test accuracy
+"""
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
 
 
 
