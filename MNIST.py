@@ -14,8 +14,27 @@ DropOut: Simply put, dropout refers to ignoring units (i.e. neurons) during the 
          
          1- Dropout forces a neural network to learn more robust features
             that are useful in conjunction with many different random subsets of the other neurons.
-        2- Dropout roughly doubles the number of iterations required to converge.
-           However, training time for each epoch is less.
+         2- Dropout roughly doubles the number of iterations required to converge.
+            However, training time for each epoch is less.
+           
+epochs: This is the number of times the model is exposed to the training set. At each iteration, the
+        optimizer tries to adjust the weights so that the objective function is minimized.
+        in other words, One Epoch is when an ENTIRE dataset is passed forward and backward through the neural network only ONCE.
+        Since one epoch is too big to feed to the computer at once we divide it in several smaller batches
+
+batch_size: This is the number of training instances observed before the optimizer performs a
+            weight update. in other words: Since one epoch is too big to feed to the computer at once we divide it in several smaller batches
+            you can’t pass the entire dataset into the neural net at once. So, you divide dataset into Number of Batches or sets or part
+
+iteration: Iterations is the number of batches needed to complete one epoch.
+            The number of batches is equal to number of iterations for one epoch    
+            Let’s say we have 2000 training examples that we are going to use .
+            We can divide the dataset of 2000 examples into batches of 500 then it will take 4 iterations to complete 1 epoch
+
+We reserved part of the training set for validation. The key idea is that we reserve a
+        part of the training data for measuring the performance on the validation while
+        training. This is a good practice to follow for any machine learning task, which we
+        will adopt in all our examples.
            
 """
 
@@ -30,7 +49,7 @@ import numpy as np
 
 np.random.seed(1671)
 
-NB_EPOCH = 100
+NB_EPOCH = 10
 BATCH_SIZE = 128 
 VERBOSE = 1
 NB_OUTPUT = 10
@@ -84,24 +103,7 @@ model.compile(OPTIMIZER , loss=categorical_crossentropy , metrics=['accuracy'])
 """
 train model
 
-epochs: This is the number of times the model is exposed to the training set. At each iteration, the
-        optimizer tries to adjust the weights so that the objective function is minimized.
-        in other words, One Epoch is when an ENTIRE dataset is passed forward and backward through the neural network only ONCE.
-        Since one epoch is too big to feed to the computer at once we divide it in several smaller batches
 
-batch_size: This is the number of training instances observed before the optimizer performs a
-            weight update. in other words: Since one epoch is too big to feed to the computer at once we divide it in several smaller batches
-            you can’t pass the entire dataset into the neural net at once. So, you divide dataset into Number of Batches or sets or part
-
-iteration: Iterations is the number of batches needed to complete one epoch.
-            The number of batches is equal to number of iterations for one epoch    
-            Let’s say we have 2000 training examples that we are going to use .
-            We can divide the dataset of 2000 examples into batches of 500 then it will take 4 iterations to complete 1 epoch
-
-We reserved part of the training set for validation. The key idea is that we reserve a
-    part of the training data for measuring the performance on the validation while
-    training. This is a good practice to follow for any machine learning task, which we
-    will adopt in all our examples.
 """
 history = model.fit(X_train , Y_train,
                         batch_size = BATCH_SIZE , epochs= NB_EPOCH,
