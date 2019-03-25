@@ -35,6 +35,14 @@ We reserved part of the training set for validation. The key idea is that we res
         part of the training data for measuring the performance on the validation while
         training. This is a good practice to follow for any machine learning task, which we
         will adopt in all our examples.
+        
+        
+Regularizers:
+    You have the regression equation y=Wx+b, where x is the input, W the weights matrix and b the bias.
+
+    Kernel Regularizer: Tries to reduce the weights W (excluding bias).
+    Bias Regularizer: Tries to reduce the bias b.
+    Activity Regularizer: Tries to reduce the layer's output y, thus will reduce the weights and adjust bias so Wx+b is smallest.
            
 """
 
@@ -44,6 +52,7 @@ from keras.layers import Dense , Dropout
 from keras.optimizers import SGD
 from keras.losses import categorical_crossentropy
 from keras.utils import np_utils
+from keras import regularizers
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -84,7 +93,7 @@ creating model & compile it
 """
 
 model = Sequential()
-model.add(Dense(NB_HIDDEN , input_shape=(X_train.shape[1],) , activation = 'relu'))
+model.add(Dense(NB_HIDDEN , kernel_regularizer=regularizers.l2(0.01) , input_shape=(X_train.shape[1],) , activation = 'relu'))
 model.add(Dropout(DROPOUT))
 model.add(Dense(NB_HIDDEN , activation='relu'))
 model.add(Dropout(DROPOUT))
